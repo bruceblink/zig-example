@@ -98,6 +98,8 @@ test "test read file" {
 
 test "test append data file" {
     const cwd = std.fs.cwd();
+    _ = try cwd.createFile("foo.txt", .{});
+
     const file = try cwd.openFile("foo.txt", .{ .mode = .write_only });
     defer file.close();
     try file.seekFromEnd(0);
@@ -105,4 +107,11 @@ test "test append data file" {
     var fw = file.writer(&fw_buffer);
     try fw.interface.writeAll("Some random text to write\n");
     try fw.interface.flush();
+}
+
+test "test delete file" {
+    const cwd = std.fs.cwd();
+    const file = try cwd.createFile("foo.txt", .{});
+    defer file.close();
+    try cwd.deleteFile("foo.txt");
 }
