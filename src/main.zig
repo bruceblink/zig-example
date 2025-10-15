@@ -115,3 +115,10 @@ test "test delete file" {
     defer file.close();
     try cwd.deleteFile("foo.txt");
 }
+
+test "test copy file" {
+    const cwd = std.fs.cwd();
+    const file = try cwd.createFile("foo.txt", .{});
+    defer file.close();
+    try cwd.copyFile("foo.txt", cwd, "foo.txt.bak", .{});
+}
