@@ -1,5 +1,8 @@
 const std = @import("std");
 const root = @import("root.zig");
+const expect = std.testing.expect;
+const eql = std.mem.eql;
+const builtin = @import("builtin");
 
 pub fn main() !void {
     // Prints to stderr, ignoring potential errors.
@@ -59,4 +62,36 @@ test "test create file" {
     try fw.interface.writeAll("Writing this line to the file\n");
     // 显式地刷新缓冲区，将数据写入文件
     try fw.interface.flush();
+}
+
+test "test read file" {
+    const cwd = std.fs.cwd();
+    const allocator = std.testing.allocator;
+
+    const file = try cwd.createFile("foo.txt", .{});
+    defer file.close();
+
+    const write_message = "\nWe are going to read this line";
+
+    var fw_buffer: [1024]u8 = undefined;
+    var fw = file.writer(&fw_buffer);
+
+    // 通过 .interface 访问 std.io.Writer 接口的 writeAll 方法
+    try fw.interface.writeAll(write_message);
+
+    try fw.interface.flush();
+
+    // 重新打开文件进行读取
+    const read_file = try cwd.openFile("foo.txt", .{});
+    defer read_file.close();
+
+    // 使用 readFileAlloc 读取整个文件
+    const read_buffer = try cwd.readFileAlloc(allocator, "foo.txt", 1024);
+    defer allocator.free(read_buffer);
+
+    // 断言读取的内容是否与写入的内容一致
+    try expect(eql(u8, write_message, read_buffer));
+
+    // 使用 stdout 打印到标准输出到控制台
+    std.debug.print("{s}\n", .{read_buffer});
 }
