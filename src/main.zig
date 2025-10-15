@@ -48,3 +48,15 @@ test "test stdout" {
     const stdout = &stdout_writer.interface;
     try stdout.writeAll("This message was written into stdout.\n");
 }
+
+test "test create file" {
+    const cwd = std.fs.cwd();
+    const file = try cwd.createFile("foo.txt", .{});
+    defer file.close();
+    var stdout_buffer: [1024]u8 = undefined;
+    var fw = file.writer(&stdout_buffer);
+    // 写入数据到缓冲区
+    try fw.interface.writeAll("Writing this line to the file\n");
+    // 显式地刷新缓冲区，将数据写入文件
+    try fw.interface.flush();
+}
