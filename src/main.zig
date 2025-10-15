@@ -5,6 +5,22 @@ pub fn main() !void {
     // Prints to stderr, ignoring potential errors.
     std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
     try root.bufferedPrint();
+    // 测试标准输入
+    try test_stdio();
+}
+
+fn test_stdio() !void {
+    var stdout_buffer: [1024]u8 = undefined;
+    var stdin_buffer: [1024]u8 = undefined;
+    var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
+    var stdin_reader = std.fs.File.stdin().reader(&stdin_buffer);
+    const stdin = &stdin_reader.interface;
+    const stdout = &stdout_writer.interface;
+    try stdout.writeAll("Type your name\n");
+    try stdout.flush();
+    const name = try stdin.takeDelimiterExclusive('\n');
+    try stdout.print("Your name is: {s}\n", .{name});
+    try stdout.flush();
 }
 
 test "simple test" {
