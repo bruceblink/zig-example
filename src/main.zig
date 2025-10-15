@@ -122,3 +122,12 @@ test "test copy file" {
     defer file.close();
     try cwd.copyFile("foo.txt", cwd, "foo.txt.bak", .{});
 }
+
+test "iterate open dir" {
+    const cwd = std.fs.cwd();
+    const dir = try cwd.openDir("./", .{ .iterate = true });
+    var it = dir.iterate();
+    while (try it.next()) |entry| {
+        std.debug.print("\nFile name: {s}\n", .{entry.name});
+    }
+}
