@@ -71,7 +71,7 @@ test "test read file" {
     const file = try cwd.createFile("foo.txt", .{});
     defer file.close();
 
-    const write_message = "\nWe are going to read this line";
+    const write_message = "We are going to read this line\n";
 
     var fw_buffer: [1024]u8 = undefined;
     var fw = file.writer(&fw_buffer);
@@ -94,4 +94,15 @@ test "test read file" {
 
     // 使用 stdout 打印到标准输出到控制台
     std.debug.print("{s}\n", .{read_buffer});
+}
+
+test "test append data file" {
+    const cwd = std.fs.cwd();
+    const file = try cwd.openFile("foo.txt", .{ .mode = .write_only });
+    defer file.close();
+    try file.seekFromEnd(0);
+    var fw_buffer: [1024]u8 = undefined;
+    var fw = file.writer(&fw_buffer);
+    try fw.interface.writeAll("Some random text to write\n");
+    try fw.interface.flush();
 }
