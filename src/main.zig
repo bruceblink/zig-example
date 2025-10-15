@@ -1,10 +1,10 @@
 const std = @import("std");
-const zig_example = @import("zig_example");
+const root = @import("root.zig");
 
 pub fn main() !void {
     // Prints to stderr, ignoring potential errors.
     std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
-    try zig_example.bufferedPrint();
+    try root.bufferedPrint();
 }
 
 test "simple test" {
