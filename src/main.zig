@@ -131,3 +131,29 @@ test "iterate open dir" {
         std.debug.print("\nFile name: {s}\n", .{entry.name});
     }
 }
+
+// 递归遍历文件夹
+test "iterate open dir recursion" {
+    const allocator = std.heap.page_allocator; // 或其他分配器
+
+    const cwd = std.fs.cwd();
+    const dir = try cwd.openDir(".zig-cache", .{ .iterate = true });
+    // dir.walk() 返回一个迭代器，用于递归遍历目录
+    var walker = try dir.walk(allocator);
+    defer walker.deinit();
+
+    while (try walker.next()) |entry| {
+        // `entry` 包含文件或目录的信息
+        switch (entry.kind) {
+            .file => {
+                std.debug.print("文件: {s}\n", .{entry.path});
+            },
+            .directory => {
+                std.debug.print("目录: {s}\n", .{entry.path});
+            },
+            else => {
+                // 处理其他文件类型
+            },
+        }
+    }
+}
