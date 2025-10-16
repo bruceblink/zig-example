@@ -3,6 +3,7 @@ const root = @import("root.zig");
 const expect = std.testing.expect;
 const eql = std.mem.eql;
 const builtin = @import("builtin");
+const Thread = std.Thread;
 
 pub fn main() !void {
     // Prints to stderr, ignoring potential errors.
@@ -156,4 +157,20 @@ test "iterate open dir recursion" {
             },
         }
     }
+}
+
+fn do_some_work() !void {
+    //var stdout_buffer: [1024]u8 = undefined;
+    //var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
+    //const stdout = &stdout_writer.interface;
+    std.debug.print("\n{s}.\n", .{"Starting the work."});
+    //try stdout.flush();
+    Thread.sleep(3000 * std.time.ns_per_ms);
+    std.debug.print("{s}.\n", .{"Finishing the work."});
+    //try stdout.flush();
+}
+
+test "test create thread" {
+    const thread = try Thread.spawn(.{}, do_some_work, .{});
+    thread.join();
 }
