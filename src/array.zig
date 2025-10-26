@@ -10,7 +10,7 @@ test "test init array" {
     try expect('h' == message[0]);
 }
 
-test "test destruction" {
+test "test destruction array" {
     const orange: [4]u8 = .{ 255, 165, 0, 255 };
     // 解构
     const r, const g, const b, const a = orange;
@@ -31,4 +31,10 @@ test "test connect array" {
     ));
     // &.{...} 语法是一个匿名数组切片，比 [8]i32{...}[0..] 简洁。
     try expect(eql(i32, &.{ 1, 2, 3, 4, 5, 6, 7, 8 }, all_of_it[0..]));
+}
+
+test "test multiply array" {
+    const small = [3]i8{ 1, 2, 3 };
+    const big: [9]i8 = small ** 3;
+    try expect(eql(i8, &.{ 1, 2, 3, 1, 2, 3, 1, 2, 3 }, big[0..]));
 }
