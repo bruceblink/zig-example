@@ -45,3 +45,11 @@ test "test string 1" {
     // 以 NUL 结尾
     try expect(bytes[16] == 0);
 }
+
+fn addFortyTwo(x: anytype) @TypeOf(x) {
+    return x + 42;
+}
+
+test "test function" {
+    try expect(43 == addFortyTwo(1));
+}
