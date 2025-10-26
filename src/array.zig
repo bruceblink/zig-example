@@ -38,3 +38,13 @@ test "test multiply array" {
     const big: [9]i8 = small ** 3;
     try expect(eql(i8, &.{ 1, 2, 3, 1, 2, 3, 1, 2, 3 }, big[0..]));
 }
+
+fn make(x: i32) i32 {
+    return x + 1;
+}
+
+test "test fn init array" {
+    // 使用函数初始化数组
+    const array = [_]i32{make(3)} ** 10;
+    try expect(eql(i32, &.{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, array[0..]));
+}
