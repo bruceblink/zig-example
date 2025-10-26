@@ -48,3 +48,15 @@ test "test fn init array" {
     const array = [_]i32{make(3)} ** 10;
     try expect(eql(i32, &.{ 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, array[0..]));
 }
+
+test "comptime init array" {
+    // 编译器初始化数组
+    const fancy_array = init: {
+        var initial_value: [10]usize = undefined;
+        for (&initial_value, 0..) |*pt, i| {
+            pt.* = i;
+        }
+        break :init initial_value;
+    };
+    try expect(eql(usize, &.{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, fancy_array[0..]));
+}
