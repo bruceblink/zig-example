@@ -46,3 +46,15 @@ test "test @splat" {
     const result: @Vector(4, u32) = @splat(scalar);
     print("\n{any}\n", .{result}); // { 5, 5, 5, 5 }
 }
+
+test "test @reduce" {
+    const V = @Vector(4, i32);
+    const value = V{ 1, -1, 1, -1 };
+
+    const result = value > @as(V, @splat(0));
+    // result 是 { true, false, true, false };
+
+    const is_all_true = @reduce(.And, result);
+    // is_all_true 是 false
+    print("\n{any}\n", .{is_all_true}); // false
+}
