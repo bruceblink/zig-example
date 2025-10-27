@@ -28,3 +28,15 @@ test "test init vector" {
     const vec2: @Vector(2, f32) = arr1[1..3].*;
     print("Vector vec2 is {any}\n", .{vec2});
 }
+
+pub fn unpack(x: @Vector(4, f32), y: @Vector(4, f32)) @Vector(4, f32) {
+    const a, const c, _, _ = x;
+    const b, const d, _, _ = y;
+    return .{ a, b, c, d };
+}
+
+test "test destruct" {
+    const x: @Vector(4, f32) = .{ 1.0, 2.0, 3.0, 4.0 };
+    const y: @Vector(4, f32) = .{ 5.0, 6.0, 7.0, 8.0 };
+    print("\n{}\n", .{unpack(x, y)});
+}
