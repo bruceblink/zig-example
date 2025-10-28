@@ -24,3 +24,17 @@ test "test array pointer" {
     const slice: []u8 = hello[1..3];
     try expect(slice.len == 2);
 }
+
+test "test pointer transform to integer" {
+    // ptrFromInt 将整数转换为指针
+    const ptr: *i32 = @ptrFromInt(0xdeadbee0);
+    // intFromPtr 将指针转换为整数
+    const addr = @intFromPtr(ptr);
+
+    if (@TypeOf(addr) == usize) {
+        std.debug.print("\nsuccess\n", .{});
+    }
+    if (addr == 0xdeadbee0) {
+        std.debug.print("success\n", .{});
+    }
+}
