@@ -46,10 +46,18 @@ test "test string 1" {
     try expect(bytes[16] == 0);
 }
 
-fn addFortyTwo(x: anytype) @TypeOf(x) {
-    return x + 42;
-}
-
-test "test function" {
-    try expect(43 == addFortyTwo(1));
+test "compare string" {
+    const bytes = "hello";
+    try std.testing.expectEqual(@as(type, *const [5:0]u8), @TypeOf(bytes));
+    try expect(5 == bytes.len);
+    try expect('e' == '\x65');
+    try expect(128169 == '\u{1f4a9}');
+    try expect(128175 == '💯');
+    print("{u}\n", .{'⚡'});
+    try expect(eql(u8, "hello", "h\x65llo"));
+    try expect(eql(u8, "💯", "\xf0\x9f\x92\xaf"));
+    const invalid_utf8 = "\xff\xfe"; // 非UTF-8 字符串可以使用\xNN.
+    // 索引它们会返回独立的字节
+    try expect(0xfe == invalid_utf8[1]);
+    try expect(0x9f == "💯"[1]);
 }
