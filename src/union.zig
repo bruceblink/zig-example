@@ -15,3 +15,10 @@ test "init union" {
     payload = Payload{ .int = 9 };
     try expect(9 == payload.int);
 }
+
+// 初始化一个编译器已知的union
+test "init union2" {
+    // 通过 @unionInit 初始化一个联合类型
+    const payload = @unionInit(Payload, "int", 666);
+    try expect(666 == payload.int);
+}
